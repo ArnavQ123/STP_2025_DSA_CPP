@@ -1,0 +1,41 @@
+#include <iostream>
+#include <climits> 
+using namespace std;
+int findSecondLargest(int arr[], int n) {
+    int first = INT_MIN, second = INT_MIN;
+
+    for (int i = 0; i < n; ++i) {
+        int val = arr[i];
+
+        if (val > first) {
+            second = first;
+            first = val;
+        } else if (val > second && val != first) {
+            second = val;
+        }
+    }
+
+    if (second == INT_MIN) {
+        cout << "No second largest element found .\n";
+        return -1;
+    }
+
+    return second;
+}
+
+int main() {
+    int n;
+    //cout << "Enter size of the array: ";
+    cin >> n;
+
+    int arr[n];
+    //cout << "Enter " << n << " elements:\n";
+    for (int i = 0; i < n; ++i)
+        cin >> arr[i];
+
+    int result = findSecondLargest(arr, n);
+    if (result != -1)
+        cout << "Second largest element is: " << result << endl;
+
+    return 0;
+}
