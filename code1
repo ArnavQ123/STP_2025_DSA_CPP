@@ -1,0 +1,31 @@
+q1)Input Name, Age, Height and Display 
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string name;
+    int age;
+    float height;
+    getline(cin, name); 
+    cin >> age;
+    cin >> height;
+
+    cout << "Name: " << name << ", Age: " << age << ", Height: " << height << endl;
+    return 0;
+}
+q2)Swap Two Variables
+#include <iostream>
+using namespace std;
+
+int main() {
+    int a, b;
+    cout << "Enter two numbers: ";
+    cin >> a >> b;
+    a = a + b;
+    b = a - b;
+    a = a - b;
+
+    cout << "After swapping: a = " << a << ", b = " << b << endl;
+    return 0;
+}
