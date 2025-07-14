@@ -1,0 +1,35 @@
+//gfg bubble sort problem
+class Solution {
+  public:
+   
+  void bubbleSort(vector<int>& arr) {
+        int n = arr.size();
+        for (int i = 0; i < n - 1; i++) {
+            bool swapped = false;
+            for (int j = 0; j < n - i - 1; j++) {
+                if (arr[j] > arr[j + 1]) {
+                    swap(arr[j], arr[j + 1]);
+                    swapped = true;
+                }
+            }
+            
+            if (!swapped) break;
+        }
+    }
+};
+//second implementation of selection sort
+class Solution {
+public:
+    void selectionSort(vector<int>& arr) {
+        int n = arr.size();
+        for (int i = 0; i < n - 1; i++) {
+            int min_idx = i;
+            for (int j = i + 1; j < n; j++) {
+                if (arr[j] < arr[min_idx]) {
+                    min_idx = j;
+                }
+            }
+            cout << "Iteration " << i + 1 << ": selected index = " << min_idx << ", value = " << arr[min_idx] << "\n";
+            swap(arr[i], arr[min_idx]);
+        }
+    }
