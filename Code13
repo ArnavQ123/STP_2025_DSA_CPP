@@ -1,0 +1,55 @@
+//Isomorphic string
+class Solution {
+public:
+    bool isIsomorphic(string s, string t) {
+        map<char,char>a1,a2;
+        if(s.size()!=t.size()){
+            return false;
+        }
+        for(int i=0;i<s.size();i++){
+            if(a1.find(s[i])!=a1.end()){
+                if(a1[s[i]]!=t[i]){
+                    return false;
+                }
+            }
+            else if(a2.find(t[i]) !=a2.end()){
+                if(a2[t[i]]!=s[i]){
+                    return false;
+                }
+            }
+            else{
+                a1[s[i]]=t[i];
+                a2[t[i]]=s[i];
+            }
+        }
+        return true;
+    }
+};
+//Longest consecutive subsequence
+class Solution {
+  public:
+
+    // Function to return length of longest subsequence of consecutive integers.
+    int longestConsecutive(vector<int>& arr) {
+        // Your code here
+        int n=arr.size();
+        set<int,less<int>>s;
+        for(auto i:arr){
+            s.insert(i);
+        }
+        int c=0,ans=0;
+        int j=*min_element(arr.begin(),arr.end());
+        for(auto i:s){
+            if(i==j){
+                c++;
+                j++;
+            }
+            else{
+                ans=max(ans,c);
+                c=1;
+                j=i+1;
+            }
+        }
+        return max(ans,c);
+    }
+};
