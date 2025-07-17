@@ -1,0 +1,77 @@
+//#include <iostream>
+#include <vector>
+using namespace std;
+void printSubarray(const vector<int>& arr, int l, int r) {
+    for (int i = l; i <= r; ++i)
+        cout << arr[i] << " ";
+    cout << endl;
+}
+void merge(vector<int>& arr, int l, int m, int r) {
+    int n1 = m - l + 1;
+    int n2 = r - m;
+
+    vector<int> L(n1), R(n2);
+
+    for (int i = 0; i < n1; ++i)
+        L[i] = arr[l + i];
+    for (int j = 0; j < n2; ++j)
+        R[j] = arr[m + 1 + j];
+
+    int i = 0, j = 0, k = l;
+
+    while (i < n1 && j < n2)
+        arr[k++] = (L[i] <= R[j]) ? L[i++] : R[j++];
+
+    while (i < n1)
+        arr[k++] = L[i++];
+    while (j < n2)
+        arr[k++] = R[j++];
+
+    // Print current merged subarray
+    printSubarray(arr, l, r);
+}
+void mergeSort(vector<int>& arr, int l, int r) {
+    if (l < r) {
+        int m = l + (r - l) / 2;
+
+        mergeSort(arr, l, m);
+        mergeSort(arr, m + 1, r);
+
+        merge(arr, l, m, r);
+    }
+}
+int main() {
+    vector<int> arr = {38, 27, 43, 3, 9, 82, 10};
+
+    cout << "Original array:\n";
+    for (int val : arr)
+        cout << val << " ";
+    cout << "\n\nMerging steps:\n";
+
+    mergeSort(arr, 0, arr.size() - 1);
+
+    cout << "\nFinal sorted array:\n";
+    for (int val : arr)
+        cout << val << " ";
+    cout << endl;
+
+    return 0;
+}
+//gfg problem
+class Solution {
+  public:
+    void mergeArrays(vector<int>& a, vector<int>& b) {
+        int i = a.size() - 1, j = 0;
+        while (i >= 0 && j < b.size()) {
+            if (a[i] <= b[j])
+                break;
+            swap(a[i], b[j]);
+            i--;
+            j++;
+        }
+
+        sort(a.begin(), a.end());
+        sort(b.begin(), b.end());
+    }
+};
+
