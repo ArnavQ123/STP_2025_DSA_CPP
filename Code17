@@ -1,0 +1,78 @@
+//#include <iostream>
+#include <vector>
+using namespace std;
+
+class Stack {
+private:
+    vector<int> stack;
+
+public:
+    // Push an element onto the stack
+    void push(int value) {
+        stack.push_back(value);
+    }
+    void pop() {
+        if (!stack.empty()) {
+            stack.pop_back();
+        } else {
+            cout << "Stack is empty. Cannot pop.\n";
+        }
+    }
+    int peek() {
+        if (!stack.empty()) {
+            return stack.back();
+        } else {
+            cout << "Stack is empty. No top element.\n";
+            return -1; // or throw exception
+        }
+    }
+    bool isEmpty() {
+        return stack.empty();
+    }
+};
+
+int main() {
+    Stack s;
+
+    s.push(10);
+    s.push(20);
+    s.push(30);
+
+    cout << "Top element is: " << s.peek() << endl; // 30
+
+    s.pop();
+    cout << "Top element after pop: " << s.peek() << endl; // 20
+
+    while (!s.isEmpty()) {
+        cout << "Popping: " << s.peek() << endl;
+        s.pop();
+    }
+
+    s.pop(); // try popping from empty stack
+
+    return 0;
+}
+//class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> st;
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s[i];
+            if (ch == '(' || ch == '{' || ch == '[') {
+                st.push(ch);
+            } else {
+                if (st.empty()) return false;
+
+                if ((ch == ')' && st.top() == '(') ||
+                    (ch == '}' && st.top() == '{') ||
+                    (ch == ']' && st.top() == '[')) {
+                    st.pop();
+                } else {
+                    return false;
+                }
+            }
+        }
+        return st.empty();
+    }
+};
+
