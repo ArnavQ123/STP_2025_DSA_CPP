@@ -1,0 +1,33 @@
+//#include <iostream>
+#include <string>
+using namespace std;
+
+class Student {
+private:
+    string name;
+    int marks;
+public:
+    Student(const string& name, int marks) : name(name), marks(marks) {}
+    void display() const {
+        cout << "Name: " << name << ", Marks: " << marks << endl;
+    }
+    Student& getSelf() {
+        return *this;
+    }
+    Student& setMarks(int m) {
+        marks = m;
+        return *this;
+    }
+};
+
+int main() {
+   
+    Student s("Alice", 85);
+    s.display();
+    s.setMarks(95).getSelf().display();
+    Student& ref = s.getSelf();
+    ref.setMarks(100);
+    ref.display();
+
+    return 0;
+}
