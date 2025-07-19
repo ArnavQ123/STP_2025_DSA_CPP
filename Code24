@@ -1,0 +1,26 @@
+//#include <iostream>
+using namespace std;
+
+void printDown(int n) {
+    if (n < 1) return;
+    cout << n << " ";
+    printDown(n - 1);
+}
+
+int main() {
+    int n;
+    cin >> n;
+    printDown(n);
+    return 0;
+}
+//class Solution {
+public:
+    int trailingZeroes(int n) {
+        int count = 0;
+        while (n) {
+            n /= 5;
+            count += n;
+        }
+        return count;
+    }
+};
