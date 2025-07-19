@@ -1,0 +1,41 @@
+//class Solution {
+  public:
+    int activitySelection(vector<int> &start, vector<int> &finish) {
+        int n = start.size();
+        vector<pair<int, int>> activities;
+        for (int i = 0; i < n; ++i) {
+            activities.emplace_back(finish[i], start[i]);
+        }
+
+        sort(activities.begin(), activities.end());
+
+        int count = 0;
+        int last_finish = -1;
+
+        for (int i = 0; i < n; ++i) {
+            if (activities[i].second > last_finish) { 
+                count++;
+                last_finish = activities[i].first;
+            }
+        }
+        return count;
+    }
+};
+//class Solution {
+public:
+    int findContentChildren(vector<int>& g, vector<int>& s) {
+        sort(g.begin(), g.end()); 
+        sort(s.begin(), s.end()); 
+
+        int i = 0; 
+        int j = 0;
+        while (i < g.size() && j < s.size()) {
+            if (s[j] >= g[i]) {
+                
+                i++;
+            }
+            j++;
+        }
+        return i; 
+    }
+};
