@@ -1,0 +1,78 @@
+//class ParkingSystem {
+private:
+    int slots[4]; 
+
+public:
+    ParkingSystem(int big, int medium, int small) {
+        slots[1] = big;    
+        slots[2] = medium; 
+        slots[3] = small;  
+    }
+    
+    bool addCar(int carType) {
+        if (slots[carType] > 0) {
+            slots[carType]--;
+            return true;
+        }
+        return false;
+    }
+};
+//#include <iostream>
+#include <vector>
+#include <string>
+#include <unordered_map>
+using namespace std;
+
+class BankAccount {
+private:
+    double balance;
+    vector<string> transactionHistory;
+
+public:
+    BankAccount(double initial = 0) : balance(initial) {
+        transactionHistory.push_back("Account created. Balance: " + to_string(balance));
+    }
+
+    void deposit(double amount) {
+        balance += amount;
+        transactionHistory.push_back("Deposited: " + to_string(amount) + ", Balance: " + to_string(balance));
+    }
+
+    void withdraw(double amount) {
+        if (balance >= amount) {
+            balance -= amount;
+            transactionHistory.push_back("Withdrew: " + to_string(amount) + ", Balance: " + to_string(balance));
+        } else {
+            transactionHistory.push_back("Withdraw attempt failed for: " + to_string(amount) + ", Balance: " + to_string(balance));
+        }
+    }
+
+    void printTransactionHistory() const {
+        cout << "Transaction history:\n";
+        for (const string& t : transactionHistory)
+            cout << t << endl;
+    }
+};
+void printFrequencies(const vector<int>& arr) {
+    unordered_map<int, int> freq;
+    for (int num : arr) {
+        freq[num]++;
+    }
+    cout << "\nFrequencies in array:\n";
+    for (const auto& kv : freq) {
+        cout << kv.first << " occurs " << kv.second << " times\n";
+    }
+}
+
+int main() {
+    BankAccount acc(500);
+    acc.deposit(200);
+    acc.withdraw(100);
+    acc.withdraw(700); // should fail
+    acc.deposit(50);
+    acc.printTransactionHistory();
+    vector<int> arr = {1, 2, 2, 3, 3, 3, 1};
+    printFrequencies(arr);
+
+    return 0;
+}
