@@ -1,0 +1,45 @@
+//class Solution {
+  public:
+    string reverseString(string& s) {
+        reverse(s.begin(), s.end());
+        return s;
+    }
+};
+
+//#include <iostream>
+#include <unordered_map>
+#include <string>
+using namespace std;
+
+unordered_map<char, int> charFrequency(const string& s) {
+    unordered_map<char, int> freq;
+    for(char ch : s) {
+        freq[ch]++;
+    }
+    return freq;
+}
+
+int main() {
+    string s = "HelloWorld";
+    unordered_map<char, int> freq = charFrequency(s);
+    for(const auto& p : freq) {
+        cout << p.first << ": " << p.second << endl;
+    }
+    return 0;
+}
+//
+class Solution {
+public:
+    bool isPalindrome(string s) {
+        int left = 0, right = s.size() - 1;
+        while (left < right) {
+            while (left < right && !isalnum(s[left])) left++;
+            while (left < right && !isalnum(s[right])) right--;
+            if (tolower(s[left]) != tolower(s[right])) return false;
+            left++;
+            right--;
+        }
+        return true;
+    }
+};
+
