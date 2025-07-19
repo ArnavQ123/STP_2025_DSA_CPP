@@ -1,0 +1,107 @@
+//class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        int left = 0;
+    int right = nums.size() - 1;
+    
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        
+        if (nums[mid] == target) {
+            return mid;
+        }
+        else if (nums[mid] < target) {
+            left = mid + 1;
+        }
+        else {
+            right = mid - 1;
+        }
+    }
+    
+    return -1;
+}
+    
+};
+//class Solution {
+public:
+    int mySqrt(int x) {
+        long left=1;
+        long right=x;
+        while(left<=right){
+            long mid=(left+right)/2;
+            if(mid*mid==x){
+                return mid;
+            }else if(mid*mid>x){
+                right=mid-1;
+            }else{
+                left=mid+1;
+            }
+        }
+        return right;
+    }
+};
+//class Solution {
+public:
+  int minEatingSpeed(vector<int>& piles, int h) {
+        int low = 1;
+        int high = 0;
+        for (int pile : piles) {
+            high = max(high, pile);
+        }
+        int ans = high;
+        while (low <= high) {
+            int mid_speed = low + (high - low) / 2;
+            long long total_hours = 0;
+            for (int pile : piles) {
+                total_hours += (long long)(pile + mid_speed - 1) / mid_speed;
+            }
+            if (total_hours <= h) {
+             
+                ans = mid_speed;
+                high = mid_speed - 1;
+            } else {
+               
+                low = mid_speed + 1;
+            }
+        }
+
+        return ans;
+    }
+};
+//
+class Solution {
+public:
+    bool canPlaceCows(vector<int>& stalls, int k, int dist) {
+        int count = 1; 
+        int lastPos = stalls[0]; 
+
+        for(int i = 1; i < stalls.size(); ++i) {
+            if(stalls[i] - lastPos >= dist) {
+                count++;
+                lastPos = stalls[i];
+                if(count == k) 
+                    return true;
+            }
+        }
+        return false; 
+    }
+
+    int aggressiveCows(vector<int> &stalls, int k) {
+        sort(stalls.begin(), stalls.end());
+        int n = stalls.size();
+
+        int low = 1, high = stalls[n - 1] - stalls[0], ans = 0;
+
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+
+            if (canPlaceCows(stalls, k, mid)) {
+                ans = mid;
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+        return ans;
+    }
+};
