@@ -1,0 +1,28 @@
+//#include <iostream>
+using namespace std;
+
+class Rectangle {
+private:
+    double length;
+    double breadth;
+public:
+
+    Rectangle() : length(1), breadth(1) {
+        // Default: 1x1 square
+    }
+    Rectangle(double l, double b) : length(l), breadth(b) {}
+    double area() const {
+        return length * breadth;
+    }
+};
+
+int main() {
+    Rectangle rect1;
+    cout << "Area of rect1 (default): " << rect1.area() << endl;
+    Rectangle rect2(5.5, 3.2);
+    cout << "Area of rect2 (5.5 x 3.2): " << rect2.area() << endl;
+    Rectangle rect3(10, 4);
+    cout << "Area of rect3 (10 x 4): " << rect3.area() << endl;
+
+    return 0;
+}
