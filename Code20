@@ -1,0 +1,104 @@
+//#include <iostream>
+using namespace std;
+
+class Node {
+public:
+    int data;
+    Node* next;
+    Node(int data): data(data), next(nullptr) {}
+};
+
+class SinglyLinkedList {
+    Node* head;
+    Node* tail; // To optimize insertAtTail to O(1)
+public:
+    SinglyLinkedList() : head(nullptr), tail(nullptr) {}
+
+    void insertAtHead(int data) {
+        Node* newNode = new Node(data);
+        newNode->next = head;
+        head = newNode;
+        if (tail == nullptr) {
+            tail = newNode; // If list was empty, update tail
+        }
+    }
+
+    void insertAtTail(int data) {
+        Node* newNode = new Node(data);
+        if (tail == nullptr) {
+            // List is empty: both head and tail are this new node
+            head = tail = newNode;
+            return;
+        }
+        tail->next = newNode;
+        tail = newNode;
+    }
+
+    void printList() const {
+        Node* curr = head;
+        while (curr) {
+            cout << curr->data << " ";
+            curr = curr->next;
+        }
+        cout << endl;
+    }
+    ~SinglyLinkedList() {
+        Node* curr = head;
+        while (curr) {
+            Node* next = curr->next;
+            delete curr;
+            curr = next;
+        }
+    }
+};
+int main() {
+    SinglyLinkedList list;
+    list.insertAtHead(3);
+    list.insertAtTail(5);
+    list.insertAtHead(2);
+    list.insertAtTail(8);
+    list.printList(); // Output: 2 3 5 8
+    return 0;
+}
+//class Solution {
+  public:
+    
+    bool searchKey(int n, Node* head, int key) {
+        Node* curr = head;
+        while (curr != nullptr) {
+            if (curr->data == key)
+                return true;
+            curr = curr->next;
+        }
+        return false;
+    }
+};
+//class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode* prev = nullptr;
+        ListNode* curr = head;
+        while (curr != nullptr) {
+            ListNode* nextTemp = curr->next; 
+            curr->next = prev;               
+            prev = curr;                     
+            curr = nextTemp;                 
+        }
+        return prev;
+    }
+};
+//class Solution {
+public:
+    ListNode* middleNode(ListNode* head) {
+        ListNode* slow = head;
+        ListNode* fast = head;
+        
+        while (fast != nullptr && fast->next != nullptr) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+       
+        return slow;
+    }
+};
+
