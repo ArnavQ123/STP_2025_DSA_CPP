@@ -1,0 +1,116 @@
+//#include <iostream>
+using namespace std;
+
+class DynamicQueue {
+private:
+    int *arr;
+    int frontIdx;
+    int rearIdx;
+    int size;
+    int capacity;
+    void resize() {
+        int newCapacity = capacity * 2;
+        int* newArr = new int[newCapacity];
+        // Copy data in queue order
+        for (int i = 0; i < size; ++i) {
+            newArr[i] = arr[(frontIdx + i) % capacity];
+        }
+        delete[] arr;
+        arr = newArr;
+        frontIdx = 0;
+        rearIdx = size;
+        capacity = newCapacity;
+    }
+
+public:
+    DynamicQueue(int initCapacity = 8)
+        : arr(new int[initCapacity]), frontIdx(0), rearIdx(0),
+          size(0), capacity(initCapacity) {}
+
+    ~DynamicQueue() {
+        delete[] arr;
+    }
+
+    void enqueue(int value) {
+        if (size == capacity) resize(); 
+        arr[rearIdx] = value;
+        rearIdx = (rearIdx + 1) % capacity;
+        ++size;
+    }
+
+    int dequeue() {
+        if (isEmpty()) {
+            throw out_of_range("Queue is empty");
+        }
+        int val = arr[frontIdx];
+        frontIdx = (frontIdx + 1) % capacity;
+        --size;
+        return val;
+    }
+
+    int peek() const {
+        if (isEmpty()) {
+            throw out_of_range("Queue is empty");
+        }
+        return arr[frontIdx];
+    }
+
+    bool isEmpty() const { return size == 0; }
+
+    int getSize() const { return size; }
+};
+
+int main() {
+    DynamicQueue q;
+
+    q.enqueue(10);
+    q.enqueue(20);
+    q.enqueue(30);
+
+    std::cout << q.peek() << "\n";     
+
+    std::cout << q.dequeue() << "\n";  
+    std::cout << q.dequeue() << "\n";  
+
+    q.enqueue(40);
+    std::cout << q.peek() << "\n";    
+
+    std::cout << (q.isEmpty() ? "Empty" : "Not Empty") << "\n"; 
+
+    return 0;
+}
+//vector<string> generate(int n) {
+    // Your code here
+    vector<string> res;
+    queue<string> q;
+    q.push("1");
+    for (int i = 0; i < n; ++i) {
+        string curr = q.front();
+        q.pop();
+        res.push_back(curr);
+        q.push(curr + "0");
+        q.push(curr + "1");
+    }
+    return res;
+}
+//class Solution {
+  public:
+    string FirstNonRepeating(string &s) {
+        vector<int> count(26, 0); 
+        queue<char> q;
+        string result;
+
+        for (char ch : s) {
+            count[ch - 'a']++;
+            q.push(ch);
+            while (!q.empty() && count[q.front() - 'a'] > 1) {
+                q.pop();
+            }
+            if (!q.empty())
+                result += q.front();
+            else
+                result += '#';
+        }
+        return result;
+    }
+};
