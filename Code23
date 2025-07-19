@@ -1,0 +1,66 @@
+//#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+class BankAccount {
+private:
+    int accountNumber;
+    double balance;
+    vector<string> transactionLog; // private transaction log
+
+    void logTransaction(const string& action, double amount) {
+        transactionLog.push_back(action + ": " + to_string(amount) + 
+            ", Balance: " + to_string(balance));
+    }
+
+public:
+    
+    BankAccount(int accNum, double bal = 0) : accountNumber(accNum), balance(bal) {
+        transactionLog.push_back("Account created, Balance: " + to_string(balance));
+    }
+    void deposit(double amount) {
+        balance += amount;
+        logTransaction("Deposit", amount);
+    }
+    void withdraw(double amount) {
+        if (amount > balance) {
+            transactionLog.push_back("Withdraw: " + to_string(amount) + " failed, Insufficient balance: " + to_string(balance));
+            cout << "Insufficient funds!" << endl;
+        } else {
+            balance -= amount;
+            logTransaction("Withdraw", amount);
+        }
+    }
+    double checkBalance() const {
+        return balance;
+    }
+    ~BankAccount() {
+        cout << "Transaction Log for Account " << accountNumber << ":\n";
+        for (const auto& log : transactionLog) {
+            cout << log << endl;
+        }
+    }
+};
+int main() {
+    BankAccount acc(12345, 1000);
+    acc.deposit(300);
+    acc.withdraw(500);
+    acc.withdraw(1000);
+    cout << "Current Balance: " << acc.checkBalance() << endl;
+} 
+//class Solution {
+  public:
+  
+    bool isIsogram(string s) {
+        bool seen[26] = {false};
+        for(char ch : s) {
+            int idx = ch - 'a';
+            if(seen[idx]) 
+                return false;
+            seen[idx] = true;
+        }
+        return true;
+    }
+};
+
