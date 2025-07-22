@@ -1,0 +1,345 @@
+//DICE GAME SIMULATOR GAME PROJECT CODE
+
+#include <QApplication>
+#include <QWidget>
+#include <QLabel>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QRandomGenerator>
+#include <QMessageBox>
+#include <QString>
+
+class DiceGame : public QWidget {
+    Q_OBJECT 
+
+public:
+    DiceGame(QWidget *parent = nullptr);
+    ~DiceGame();
+
+private slots:
+    void onRollDiceClicked();
+    void onHoldClicked();
+    void onNewGameClicked();
+
+private:
+    void setupUI();
+    void updateUI();
+    void switchPlayer();
+    void endGame(const QString& winner);
+    void initializeGame();
+
+    int player1TotalScore;
+    int player2TotalScore;
+    int currentTurnScore;
+    int activePlayer; 
+    bool isGameActive;
+    const int winningScore = 100;
+
+    
+    QGridLayout *mainLayout;
+
+    QWidget *player1Widget;
+    QVBoxLayout *player1Layout;
+    QLabel *player1TitleLabel;
+    QLabel *player1ScoreLabel;
+    QWidget *player1CurrentBox;
+    QVBoxLayout *player1CurrentLayout;
+    QLabel *player1CurrentTitleLabel;
+    QLabel *player1CurrentScoreLabel;
+
+    
+    QWidget *player2Widget;
+    QVBoxLayout *player2Layout;
+    QLabel *player2TitleLabel;
+    QLabel *player2ScoreLabel;
+    QWidget *player2CurrentBox;
+    QVBoxLayout *player2CurrentLayout;
+    QLabel *player2CurrentTitleLabel;
+    QLabel *player2CurrentScoreLabel;
+
+   
+    QLabel *diceLabel;
+    QPushButton *rollDiceButton;
+    QPushButton *holdButton;
+    QPushButton *newGameButton;
+};
+
+
+
+DiceGame::DiceGame(QWidget *parent) : QWidget(parent) {
+    setupUI();
+    initializeGame();
+}
+
+DiceGame::~DiceGame() {
+    // Qt's parent-child ownership model handles deleting child widgets,
+    // so we don't need to manually delete the pointers.
+}
+
+void DiceGame::setupUI() {
+   
+    setWindowTitle("Dice Game Simulator");
+    setMinimumSize(600, 400);
+    setStyleSheet(R"(
+        QWidget {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        QLabel {
+            font-size: 16px;
+        }
+        QPushButton {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            min-width: 120px;
+        }
+        QPushButton:hover {
+            background-color: #357abd;
+        }
+        QPushButton:pressed {
+            background-color: #2a6296;
+        }
+        QPushButton#newGameButton {
+            background-color: #e67e22;
+        }
+        QPushButton#newGameButton:hover {
+            background-color: #d35400;
+        }
+        QWidget[active="true"] {
+            background-color: #e0e0e0;
+            border: 2px solid #4a90e2;
+            border-radius: 10px;
+        }
+        QLabel#playerTitle {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        QLabel#scoreLabel {
+            font-size: 48px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        QWidget#currentBox {
+            background-color: #4a90e2;
+            border-radius: 8px;
+        }
+        QLabel#currentTitleLabel, QLabel#currentScoreLabel {
+            color: white;
+        }
+        QLabel#currentTitleLabel {
+            font-size: 18px;
+        }
+        QLabel#currentScoreLabel {
+            font-size: 32px;
+            font-weight: bold;
+        }
+        QLabel#diceLabel {
+            font-size: 100px;
+            font-weight: bold;
+            color: #333;
+            border: 3px solid #ccc;
+            border-radius: 15px;
+            background-color: white;
+            min-width: 150px;
+            min-height: 150px;
+        }
+    )");
+
+    mainLayout = new QGridLayout(this);
+
+    player1Widget = new QWidget();
+    player1Widget->setProperty("active", false); // Custom property for styling
+    player1Layout = new QVBoxLayout(player1Widget);
+    player1TitleLabel = new QLabel("PLAYER 1");
+    player1TitleLabel->setObjectName("playerTitle");
+    player1TitleLabel->setAlignment(Qt::AlignCenter);
+    player1ScoreLabel = new QLabel("0");
+    player1ScoreLabel->setObjectName("scoreLabel");
+    player1ScoreLabel->setAlignment(Qt::AlignCenter);
+
+    player1CurrentBox = new QWidget();
+    player1CurrentBox->setObjectName("currentBox");
+    player1CurrentLayout = new QVBoxLayout(player1CurrentBox);
+    player1CurrentTitleLabel = new QLabel("CURRENT");
+    player1CurrentTitleLabel->setObjectName("currentTitleLabel");
+    player1CurrentTitleLabel->setAlignment(Qt::AlignCenter);
+    player1CurrentScoreLabel = new QLabel("0");
+    player1CurrentScoreLabel->setObjectName("currentScoreLabel");
+    player1CurrentScoreLabel->setAlignment(Qt::AlignCenter);
+    
+    player1Layout->addWidget(player1TitleLabel);
+    player1Layout->addWidget(player1ScoreLabel);
+    player1Layout->addStretch();
+    player1Layout->addWidget(player1CurrentBox);
+
+    
+    QVBoxLayout *controlsLayout = new QVBoxLayout();
+    diceLabel = new QLabel("6");
+    diceLabel->setObjectName("diceLabel");
+    diceLabel->setAlignment(Qt::AlignCenter);
+
+    rollDiceButton = new QPushButton("🎲 Roll Dice");
+    holdButton = new QPushButton("📥 Hold");
+    newGameButton = new QPushButton("✨ New Game");
+    newGameButton->setObjectName("newGameButton");
+
+    controlsLayout->addStretch();
+    controlsLayout->addWidget(rollDiceButton, 0, Qt::AlignCenter);
+    controlsLayout->addWidget(diceLabel, 0, Qt::AlignCenter);
+    controlsLayout->addWidget(holdButton, 0, Qt::AlignCenter);
+    controlsLayout->addStretch();
+    controlsLayout->addWidget(newGameButton, 0, Qt::AlignCenter);
+    controlsLayout->addStretch();
+
+
+    player2Widget = new QWidget();
+    player2Widget->setProperty("active", false);
+    player2Layout = new QVBoxLayout(player2Widget);
+    player2TitleLabel = new QLabel("PLAYER 2");
+    player2TitleLabel->setObjectName("playerTitle");
+    player2TitleLabel->setAlignment(Qt::AlignCenter);
+    player2ScoreLabel = new QLabel("0");
+    player2ScoreLabel->setObjectName("scoreLabel");
+    player2ScoreLabel->setAlignment(Qt::AlignCenter);
+
+    player2CurrentBox = new QWidget();
+    player2CurrentBox->setObjectName("currentBox");
+    player2CurrentLayout = new QVBoxLayout(player2CurrentBox);
+    player2CurrentTitleLabel = new QLabel("CURRENT");
+    player2CurrentTitleLabel->setObjectName("currentTitleLabel");
+    player2CurrentTitleLabel->setAlignment(Qt::AlignCenter);
+    player2CurrentScoreLabel = new QLabel("0");
+    player2CurrentScoreLabel->setObjectName("currentScoreLabel");
+    player2CurrentScoreLabel->setAlignment(Qt::AlignCenter);
+
+    player2Layout->addWidget(player2TitleLabel);
+    player2Layout->addWidget(player2ScoreLabel);
+    player2Layout->addStretch();
+    player2Layout->addWidget(player2CurrentBox);
+
+    mainLayout->addWidget(player1Widget, 0, 0);
+    mainLayout->addLayout(controlsLayout, 0, 1);
+    mainLayout->addWidget(player2Widget, 0, 2);
+
+    
+    connect(rollDiceButton, &QPushButton::clicked, this, &DiceGame::onRollDiceClicked);
+    connect(holdButton, &QPushButton::clicked, this, &DiceGame::onHoldClicked);
+    connect(newGameButton, &QPushButton::clicked, this, &DiceGame::onNewGameClicked);
+}
+
+void DiceGame::initializeGame() {
+    player1TotalScore = 0;
+    player2TotalScore = 0;
+    currentTurnScore = 0;
+    activePlayer = 1;
+    isGameActive = true;
+
+    rollDiceButton->setEnabled(true);
+    holdButton->setEnabled(true);
+
+    updateUI();
+}
+
+void DiceGame::onNewGameClicked() {
+    initializeGame();
+}
+
+void DiceGame::onRollDiceClicked() {
+    if (!isGameActive) return;
+
+    
+    int diceRoll = QRandomGenerator::global()->bounded(1, 7);
+    diceLabel->setText(QString::number(diceRoll));
+
+    if (diceRoll == 1) {
+     
+        currentTurnScore = 0;
+        QMessageBox::information(this, "Unlucky!", "You rolled a 1! Your turn is over.");
+        switchPlayer();
+    } else {
+        // Add roll to current score
+        currentTurnScore += diceRoll;
+    }
+    updateUI();
+}
+
+void DiceGame::onHoldClicked() {
+    if (!isGameActive) return;
+
+    // Add current score to total score
+    if (activePlayer == 1) {
+        player1TotalScore += currentTurnScore;
+    } else {
+        player2TotalScore += currentTurnScore;
+    }
+
+    if (player1TotalScore >= winningScore) {
+        endGame("Player 1");
+    } else if (player2TotalScore >= winningScore) {
+        endGame("Player 2");
+    } else {
+        switchPlayer();
+    }
+    updateUI();
+}
+
+void DiceGame::switchPlayer() {
+    currentTurnScore = 0;
+    activePlayer = (activePlayer == 1) ? 2 : 1;
+    updateUI();
+}
+
+void DiceGame::endGame(const QString& winner) {
+    isGameActive = false;
+    rollDiceButton->setEnabled(false);
+    holdButton->setEnabled(false);
+
+
+    if (activePlayer == 1) player1ScoreLabel->setText(QString::number(player1TotalScore));
+    else player2ScoreLabel->setText(QString::number(player2TotalScore));
+
+    QMessageBox::information(this, "Game Over!", winner + " wins with a score of " + (activePlayer == 1 ? QString::number(player1TotalScore) : QString::number(player2TotalScore)) + "!");
+}
+
+void DiceGame::updateUI() {
+   
+    player1ScoreLabel->setText(QString::number(player1TotalScore));
+    player2ScoreLabel->setText(QString::number(player2TotalScore));
+
+    if (activePlayer == 1) {
+        player1CurrentScoreLabel->setText(QString::number(currentTurnScore));
+        player2CurrentScoreLabel->setText("0");
+        player1Widget->setProperty("active", true);
+        player2Widget->setProperty("active", false);
+    } else {
+        player2CurrentScoreLabel->setText(QString::number(currentTurnScore));
+        player1CurrentScoreLabel->setText("0");
+        player1Widget->setProperty("active", false);
+        player2Widget->setProperty("active", true);
+    }
+    
+   
+    style()->unpolish(player1Widget);
+    style()->polish(player1Widget);
+    style()->unpolish(player2Widget);
+    style()->polish(player2Widget);
+}
+
+
+
+int main(int argc, char *argv[]) {
+    
+    QApplication app(argc, argv);
+
+    DiceGame game;
+    game.show();
+
+    return app.exec();
+}
